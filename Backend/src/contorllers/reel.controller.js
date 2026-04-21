@@ -1,6 +1,7 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import {resolve} from 'path';
+import { resolve } from 'path';
+import fs from 'fs'
 
 export const getReels = async (req, res) => {
     const execPromise = promisify(exec);
@@ -12,7 +13,16 @@ export const getReels = async (req, res) => {
         const response = await execPromise(`yt-dlp -o "${path}" "${url}"`);
         const match = response.stdout.match(/Destination: (.+)/);
         const filePath = match[1].trim();
-        res.sendFile(resolve(filePath));
+        const fileName = filePath.split('\\').pop();
+        res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
+        res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+        res.sendFile(resolve(filePath), (err) => {
+            if (err) console.log(err)
+            fs.unlink(filePath, (err) => {
+                if (err) console.log(err)
+            })
+        })
+
     } catch (error) {
         res.status(500).send({
             message: "Error downloading the reel",
@@ -23,7 +33,7 @@ export const getReels = async (req, res) => {
 
 
 // res.status(200).send({
-        //     message: "Reel downloaded successfully",
-        //     response: response,
-        //     filePath: filePath
-        // });
+//     message: "Reel downloaded successfully",
+//     response: response,
+//     filePath: filePath
+// });
