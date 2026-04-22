@@ -8,6 +8,7 @@ app.use(express.json());
 console.log(config.FRONTEND_URL);
 app.use(cors({
     origin: config.FRONTEND_URL, // Adjust this to your frontend URL
+    credentials: true
 }))
 
 app.use('/api/reels', reelRouter);
