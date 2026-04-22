@@ -21,11 +21,16 @@ export const getReels = async (req, res) => {
     const path = `${mediaDir}/%(title)s.%(ext)s`;
 
     try {
-        const response = await execPromise(`yt-dlp -o "${path}" "${url}"`);
+        const response = await execPromise(`yt-dlp -o "${path}" --print after_move:filepath "${url}"`);
         console.log("STDOUT:", response.stdout);
         console.log("STDERR:", response.stderr);
-        const match = response.stdout.match(/Destination: (.+)/);
-        const filePath = match[1].trim();
+        // let match = response.stdout.match(/Merging formats into "(.+)"/);
+        // if (!match) {
+        //     match = response.stdout.match(/Destination: (.+)/);
+        // }
+        // const filePath = match[1].trim();
+        const filePath = response.stdout.trim();
+        console.log("File path:", filePath);
         const fileName = basename(filePath);
         res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
         res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
