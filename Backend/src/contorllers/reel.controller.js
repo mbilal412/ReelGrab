@@ -2,6 +2,10 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import { resolve, basename } from 'path';
 import fs from 'fs'
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = resolve(__filename);
 
 export const getReels = async (req, res) => {
     const execPromise = promisify(exec);
@@ -22,7 +26,7 @@ export const getReels = async (req, res) => {
         const fileName = basename(filePath);
         res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
         res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
-        res.sendFile(resolve(filePath), (err) => {
+        res.sendFile(filePath, (err) => {
             if (err) console.log(err)
             fs.unlink(filePath, (err) => {
                 if (err) console.log(err)
