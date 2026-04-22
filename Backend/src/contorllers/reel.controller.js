@@ -1,11 +1,12 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { resolve, basename } from 'path';
+import { resolve, basename, dirname } from 'path';
 import fs from 'fs'
 import { fileURLToPath } from 'url';
 
+
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = resolve(__filename);
+const __dirname = dirname(__filename);
 
 export const getReels = async (req, res) => {
     const execPromise = promisify(exec);
@@ -17,7 +18,6 @@ export const getReels = async (req, res) => {
     }
 
     const mediaDir = resolve(__dirname, '../media');
-    console.log("MEDIA DIR:", mediaDir);
     const path = `${mediaDir}/%(title)s.%(ext)s`;   
 
     try {
