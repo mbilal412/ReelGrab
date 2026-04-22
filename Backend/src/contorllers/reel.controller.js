@@ -15,7 +15,7 @@ export const getReels = async (req, res) => {
     const path = "src/media/%(title)s.%(ext)s"
 
     try {
-        const response = await execPromise(`yt-dlp -o "${path}" "${url}"`);
+        const response = await execPromise(`python3 -m yt_dlp -o "${path}" "${url}"`);
         const match = response.stdout.match(/Destination: (.+)/);
         const filePath = match[1].trim();
         // const fileName = filePath.split('\\').pop();
