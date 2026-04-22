@@ -30,6 +30,7 @@ export const getReels = async (req, res) => {
         })
 
     } catch (error) {
+        console.log(error);
         res.status(500).send({
             message: error.message.includes('is not a valid URL') ? 'invalid url': 'Error downloading the reel',
             
