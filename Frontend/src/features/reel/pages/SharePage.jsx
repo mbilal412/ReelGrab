@@ -31,7 +31,7 @@ const SharePage = () => {
         <main>
             {successMessage
                 ? <h3 style={{ color: 'green' }}>{successMessage}</h3>
-                : <h2>Downloading Start</h2>
+                : <h2>Downloading...</h2>
             }
             {error && <p style={{ color: 'red' }}>Error: {error}</p>}
         </main>

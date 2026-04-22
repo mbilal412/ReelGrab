@@ -1,6 +1,6 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { resolve } from 'path';
+import { resolve, basename } from 'path';
 import fs from 'fs'
 
 export const getReels = async (req, res) => {
@@ -18,7 +18,8 @@ export const getReels = async (req, res) => {
         const response = await execPromise(`yt-dlp -o "${path}" "${url}"`);
         const match = response.stdout.match(/Destination: (.+)/);
         const filePath = match[1].trim();
-        const fileName = filePath.split('\\').pop();
+        // const fileName = filePath.split('\\').pop();
+        const fileName = basename(filePath);
         res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
         res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
         res.sendFile(resolve(filePath), (err) => {
