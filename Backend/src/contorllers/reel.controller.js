@@ -17,6 +17,7 @@ export const getReels = async (req, res) => {
     }
 
     const mediaDir = resolve(__dirname, '../media');
+    console.log("MEDIA DIR:", mediaDir);
     const path = `${mediaDir}/%(title)s.%(ext)s`;   
 
     try {
