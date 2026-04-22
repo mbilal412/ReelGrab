@@ -5,6 +5,7 @@ import config from './config/config.js';
 
 const app = express();
 app.use(express.json());
+console.log(config.FRONTEND_URL);
 app.use(cors({
     origin: config.FRONTEND_URL, // Adjust this to your frontend URL
 }))
