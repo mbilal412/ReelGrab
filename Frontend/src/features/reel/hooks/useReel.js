@@ -1,7 +1,12 @@
 import { downloadReel } from "../services/reel.service";
+import { useContext } from "react";
+import { ReelContext } from "../context/reelContext";
 
 export const useReel = () => {
+    const { setLoading, setError, loading, error } = useContext(ReelContext);
     const handleDownload = async (reelUrl) => {
+        setLoading(true);
+        setError(null);
         try {
             const response = await downloadReel(reelUrl);
             const disposition = response.headers['content-disposition'];
@@ -11,13 +16,17 @@ export const useReel = () => {
             a.href = url;
             a.download = filename; // Set the download attribute to the extracted filename
             a.click();
-            console.log('Reel downloaded successfully');
         } catch (error) {
-            console.error('Error downloading reel:', error);
+            const errorText = await error.response.data.text();
+            const errorJson = JSON.parse(errorText);
+            setError(errorJson.message || 'Error downloading the reel');
+            throw errorJson.message || 'Error downloading the reel';
+        } finally {
+            setLoading(false);
         }
     };
 
     return {
-        handleDownload,
+        handleDownload, loading, error
     };
 }

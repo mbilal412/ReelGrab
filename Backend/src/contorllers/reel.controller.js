@@ -6,6 +6,11 @@ import fs from 'fs'
 export const getReels = async (req, res) => {
     const execPromise = promisify(exec);
     const { url } = req.body
+    if(!url) {
+        return res.status(400).send({
+            message: "URL is required"
+        })
+    }
 
     const path = "src/media/%(title)s.%(ext)s"
 
@@ -25,8 +30,8 @@ export const getReels = async (req, res) => {
 
     } catch (error) {
         res.status(500).send({
-            message: "Error downloading the reel",
-            error: error.message
+            message: error.message.includes('is not a valid URL') ? 'invalid url': 'Error downloading the reel',
+            
         });
     }
 };
