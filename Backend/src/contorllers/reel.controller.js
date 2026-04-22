@@ -20,18 +20,43 @@ export const getReels = async (req, res) => {
     const mediaDir = resolve(__dirname, '../media');
     const path = `${mediaDir}/%(title)s.%(ext)s`;
 
+    req.on('aborted', () => {
+        console.log("CLIENT ABORTED REQUEST");
+    });
+    req.on('aborted', () => {
+        console.log("CLIENT ABORTED REQUEST");
+    });
+
+    res.on('close', () => {
+        console.log("RESPONSE CLOSED");
+    });
     try {
-        const response = await execPromise(`yt-dlp -o "${path}" --print after_move:filepath "${url}"`);
-        const filePath = response.stdout.trim();
+        const response = await execPromise(`yt-dlp -o "${path}" "${url}"`, {
+            timeout: 0 // Set a timeout of 60 seconds
+        });
+        let match = response.stdout.match(/Merging formats into "(.+)"/);
+        if (!match) {
+            match = response.stdout.match(/Destination: (.+)/);
+        }
+        if (!match) {
+            throw new Error('Could not determine the downloaded file path');
+        }
+        const filePath = match[1].trim();
         const fileName = basename(filePath);
-        res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
+
+        const stream = fs.createReadStream(filePath);
+        res.setHeader('Content-Disposition', `attachment; filename="${basename(filePath)}"`);
         res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
-        res.sendFile(filePath, (err) => {
-            if (err) console.log(err)
-            fs.unlink(filePath, (err) => {
-                if (err) console.log(err)
-            })
-        })
+
+        stream.pipe(res);
+
+        stream.on('end', () => {
+            fs.unlink(filePath, () => { });
+        });
+
+        stream.on('error', (err) => {
+            console.log("STREAM ERROR:", err);
+        });
 
     } catch (error) {
         console.log(error);
