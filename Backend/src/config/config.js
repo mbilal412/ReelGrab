@@ -11,6 +11,6 @@ if(!process.env.PORT) {
 }
 
 export default {
-    FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5173',
+    FRONTEND_URL: process.env.FRONTEND_URL,
     PORT: process.env.PORT 
 }
