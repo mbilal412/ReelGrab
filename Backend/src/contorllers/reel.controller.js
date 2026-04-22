@@ -16,10 +16,7 @@ export const getReels = async (req, res) => {
 
     try {
         const response = await execPromise(`yt-dlp -o "${path}" "${url}"`);
-        console.log("STDOUT:", response.stdout);
-        console.log("STDERR:", response.stderr);
         const match = response.stdout.match(/Destination: (.+)/);
-        console.log("MATCH:", match);
         const filePath = match[1].trim();
         const fileName = basename(filePath);
         res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
