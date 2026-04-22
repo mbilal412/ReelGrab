@@ -12,7 +12,8 @@ export const getReels = async (req, res) => {
         })
     }
 
-    const path = "src/media/%(title)s.%(ext)s"
+    const mediaDir = resolve(__dirname, '../media');
+    const path = `${mediaDir}/%(title)s.%(ext)s`;   
 
     try {
         const response = await execPromise(`yt-dlp -o "${path}" "${url}"`);
