@@ -2,38 +2,57 @@ import React from 'react'
 import '../style/share.scss'
 import { useSearchParams } from 'react-router'
 import { useEffect, useState } from 'react';
-import { } from 'react';
 import { useReel } from '../hooks/useReel';
 
 const SharePage = () => {
-    const { handleDownload, error } = useReel();
+    const { handleDownloadReel, downloading, progress, error } = useReel();
     const [successMessage, setSuccessMessage] = useState('');
     const [searchParams] = useSearchParams();
-    const url = searchParams.get('url');
+    const reelUrl = searchParams.get('url');
+
     useEffect(() => {
         setSuccessMessage('');
+
         const downloadReel = async () => {
             try {
-                await handleDownload(url)
-                setSuccessMessage('Reel downloaded successfully!');
-                window.location.href = 'instagram://';
+                await handleDownloadReel(reelUrl)
+                setSuccessMessage('Download completed successfully.');
             } catch (error) {
                 //
             }
-        }
-        if (url) {
+        };
+
+        if (reelUrl) {
             downloadReel();
         }
-    }, [url]);
+    }, [reelUrl]);
+
+    const statusText = !reelUrl
+        ? 'Please open this page from Instagram share so download can start.'
+        : downloading
+            ? 'Downloading reel...'
+            : successMessage || 'Preparing your download...';
 
 
     return (
-        <main>
-            {successMessage
-                ? <h3 style={{ color: 'green' }}>{successMessage}</h3>
-                : <h2>Downloading...</h2>
-            }
-            {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+        <main className='share-page'>
+            <section className='share-card'>
+                <p className='share-label'>Auto Download</p>
+                <h2 className='share-title'>Your reel download starts automatically</h2>
+
+                <p className={`share-status ${error ? 'is-error' : successMessage ? 'is-success' : ''}`}>
+                    {error ? `Error: ${error}` : statusText}
+                </p>
+
+                {(downloading || progress > 0) && (
+                    <>
+                        <div className='download-line'>
+                            <div className='download-fill' style={{ width: `${progress}%` }}></div>
+                        </div>
+                        <p className='progress-text'>{progress}%</p>
+                    </>
+                )}
+            </section>
         </main>
     )
 }

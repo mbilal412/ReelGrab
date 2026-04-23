@@ -6,11 +6,11 @@ import '../style/reel.scss'
 
 const Dashboard = () => {
     const [url, setUrl] = useState('')
-    const { handleDownloadReel, loading, error } = useReel()
+    const { handleDownloadReel, downloading, error, progress } = useReel()
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (loading) return;
+        if (downloading) return;
         handleDownloadReel(url);
     }
 
@@ -18,17 +18,30 @@ const Dashboard = () => {
     return (
         <>
             <main className='dashboard'>
-                <form action="" onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        placeholder='enter url'
-                        value={url}
-                        onChange={(e) => setUrl(e.target.value)}
-                    />
-                    <button type='submit' disabled={loading}>
-                        {loading ? 'Downloading...' : 'Download'}
-                    </button>
-                    {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+                <form action="" onSubmit={handleSubmit} className='download-form'>
+                    <div className='download-row'>
+                        <input
+                            type="text"
+                            placeholder='enter url'
+                            value={url}
+                            onChange={(e) => setUrl(e.target.value)}
+                        />
+                        <button type='submit' disabled={downloading}>
+                            {downloading ? 'Downloading...' : 'Download'}
+                        </button>
+                    </div>
+
+                    {(downloading || progress > 0) && (
+                        <div className='download-line'>
+                            <div className='download-fill' style={{ width: `${progress}%` }}></div>
+                        </div>
+                    )}
+
+                    {(downloading || progress > 0) && (
+                        <p className='progress-text'>{progress}%</p>
+                    )}
+
+                    {error && <p className='error-text'>Error: {error}</p>}
                 </form>
             </main>
         </>

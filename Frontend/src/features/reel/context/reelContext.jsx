@@ -4,11 +4,12 @@ import { useState } from "react";
 export const ReelContext = createContext();
 
 const ReelProvider = ({ children }) => {
-    const [loading, setLoading] = useState(false);
+    const [downloading, setDownloading] = useState(false);
+    const [progress, setProgress] = useState(0);
     const [error, setError] = useState(null);
 
     return (
-        <ReelContext.Provider value={{ loading, setLoading, error, setError }}>
+        <ReelContext.Provider value={{ downloading, setDownloading, progress, setProgress, error, setError }}>
             {children}
         </ReelContext.Provider>
     )

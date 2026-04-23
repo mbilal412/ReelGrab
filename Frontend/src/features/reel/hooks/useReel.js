@@ -1,15 +1,19 @@
-import { donwnloadReel } from "../services/reel.service";
+import { donwnloadReel, getDownloadProgress } from "../services/reel.service";
 import { useContext } from "react";
 import { ReelContext } from "../context/ReelContext";
 
 export const useReel = () => {
-    const { loading, error, setLoading, setError } = useContext(ReelContext);
+    const { downloading, setDownloading, progress, setProgress, error, setError } = useContext(ReelContext);
 
     const handleDownloadReel = async (url) => {
-        setLoading(true);
+        const sessionId = crypto.randomUUID();
+        setDownloading(true);
         setError(null);
         try {
-            const response = await donwnloadReel(url);
+            const eventSource = getDownloadProgress(sessionId, (progress) => {
+                setProgress(progress);
+            });
+            const response = await donwnloadReel(url, sessionId);
             const disposition = response.headers['content-disposition'];
             const filename = disposition?.split('filename=')[1]?.replace(/"/g, '') || 'reel.mp4';
 
@@ -18,6 +22,7 @@ export const useReel = () => {
             link.href = URL.createObjectURL(blob);
             link.download = filename;
             link.click();
+            eventSource.close();
 
         }
         catch (err) {
@@ -25,13 +30,15 @@ export const useReel = () => {
             const error = JSON.parse(text);
             setError(error.message || 'Failed to download reel');
         }finally{
-            setLoading(false);``
+            setDownloading(false);
+            setProgress(0);
         }
     }
     
     return {
         handleDownloadReel,
-        loading,
+        progress,
+        downloading,
         error
     }
 

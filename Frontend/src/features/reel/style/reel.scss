@@ -16,41 +16,100 @@ body, #root {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 1rem;
+    background: linear-gradient(140deg, #f2f7ff 0%, #f9fcff 100%);
 
-    form{
+    .download-form{
         display: flex;
         flex-direction: column;
-        gap: 1rem;
-        width: 300px;
+        gap: 0.75rem;
+        width: min(560px, 100%);
+        background: #ffffff;
+        border: 1px solid #d4e2f7;
+        border-radius: 14px;
+        padding: 1rem;
+        box-shadow: 0 12px 32px rgba(0, 55, 130, 0.08);
+
+        .download-row {
+            display: flex;
+            gap: 0.65rem;
+
+            @media (max-width: 520px) {
+                flex-direction: column;
+            }
+        }
 
         input {
-            padding: 0.5rem;
+            width: 100%;
+            padding: 0.7rem 0.75rem;
             font-size: 1rem;
+            border: 1px solid #bfd4f3;
+            border-radius: 10px;
+            outline: none;
+
+            &:focus {
+                border-color: #1b6de3;
+                box-shadow: 0 0 0 3px rgba(27, 109, 227, 0.16);
+            }
         }
 
         button {
-            padding: 0.5rem;
+            min-width: 138px;
+            padding: 0.7rem 0.9rem;
             font-size: 1rem;
-            background-color: #007bff;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            background-color: #1b6de3;
             color: white;
             border: none;
+            border-radius: 10px;
             cursor: pointer;
             transition: background-color 0.2s ease, opacity 0.2s ease;
 
             &:hover {
-                background-color: #0056b3;
+                background-color: #0f57bf;
             }
 
             &:disabled {
-                background-color: #8aa9d6;
-                opacity: 0.7;
+                background-color: #8ba8d5;
+                opacity: 0.8;
                 cursor: not-allowed;
                 pointer-events: none;
             }
 
             &:disabled:hover {
-                background-color: #8aa9d6;
+                background-color: #8ba8d5;
             }
+        }
+
+        .download-line {
+            width: 100%;
+            height: 0.65rem;
+            border-radius: 999px;
+            overflow: hidden;
+            background-color: #e4eefc;
+            border: 1px solid #c4d7f6;
+
+            .download-fill {
+                height: 100%;
+                border-radius: inherit;
+                background: linear-gradient(90deg, #1b6de3 0%, #2f87ff 100%);
+                transition: width 0.25s ease;
+            }
+        }
+
+        .progress-text {
+            margin: 0;
+            color: #0f57bf;
+            font-size: 0.92rem;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .error-text {
+            margin: 0;
+            color: #c62828;
+            font-size: 0.92rem;
         }
     }
 }

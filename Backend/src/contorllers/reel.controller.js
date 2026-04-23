@@ -2,8 +2,39 @@ import { spawn } from 'child_process';
 import os from 'os';
 import fs from 'fs'
 
+const progressClients = new Map();
+
+
+export const getProgress = (req, res) => {
+    
+    console.log('SSE connected:', req.params.sessionId);
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    const { sessionId } = req.params;
+    console.log('SessionId received:', sessionId);
+    console.log('Client found:', progressClients.has(sessionId));
+
+    progressClients.set(sessionId, res);
+    console.log('Client stored:', progressClients.has(sessionId));
+
+    req.on('close', () => {
+        progressClients.delete(sessionId);
+    });
+}
+
+
 export const downloadReel = async (req, res) => {
-    const { url } = req.body;
+
+    const { url, sessionId } = req.body;
+
+    /**
+     * We will use the sessionID to send progress updates to the correct client using Server-Sent Events (SSE).
+     * The client will listen to the /progress endpoint with the same sessionID to receive updates.
+     */
+
+    
 
     if (!url || !url.includes('instagram.com')) {
         return res.status(400).json({ message: 'Invalid Instagram URL' });
@@ -41,6 +72,16 @@ export const downloadReel = async (req, res) => {
         });
 
         downloadProcess.stdout.on('data', (data) => {
+            /**
+             * Sending download progress to the client in XX% format
+             */
+            const client = progressClients.get(sessionId);
+            const output = data.toString();
+            const match = output.match(/(\d+\.?\d*)%/);
+            if (match && client) {
+                console.log('Progress:', match[1]);
+                client.write(`data: ${match[1]}\n\n`);
+            }
             console.log(`yt-dlp output: ${data}`);
         });
 
@@ -57,13 +98,14 @@ export const downloadReel = async (req, res) => {
                     }
                     fs.unlinkSync(outputPath)
                 })
-            }else{
+            } else {
                 console.error(`yt-dlp process exited with code ${code} while downloading`);
                 res.status(500).json({ message: 'Failed to download reel' });
 
             }
-            
-            
+
+
         });
     });
 }
+
