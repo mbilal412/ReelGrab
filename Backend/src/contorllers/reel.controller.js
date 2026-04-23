@@ -16,6 +16,10 @@ export const downloadReel = async (req, res) => {
         console.log(`stdOut: ${data}`);
     });
 
+    process.on('error', (error) => {
+        console.error(`Error spawning yt-dlp: ${error}`);
+    });
+
     process.on('close', (code) => {
         if (code !== 0) {
             console.error(`yt-dlp process exited with code ${code}`);
