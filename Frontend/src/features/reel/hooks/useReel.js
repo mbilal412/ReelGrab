@@ -1,6 +1,6 @@
 import { donwnloadReel, getDownloadProgress } from "../services/reel.service";
 import { useContext } from "react";
-import { ReelContext } from "../context/ReelContext";
+import { ReelContext } from "../context/ReelContext.jsx";
 
 export const useReel = () => {
     const { downloading, setDownloading, progress, setProgress, error, setError } = useContext(ReelContext);
