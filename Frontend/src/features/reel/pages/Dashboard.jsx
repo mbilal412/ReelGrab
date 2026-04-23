@@ -10,6 +10,7 @@ const Dashboard = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (loading) return;
         handleDownload(url);
     }
 

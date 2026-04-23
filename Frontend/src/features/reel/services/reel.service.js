@@ -8,7 +8,7 @@ const api = axios.create({
 export const downloadReel = async (reelUrl) => {
     const response = await api.post('/api/reels/download', 
         { url: reelUrl },
-        { responseType: 'blob' }
+        
     );
     return response;
 }

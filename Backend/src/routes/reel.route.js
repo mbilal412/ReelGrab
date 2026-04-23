@@ -1,7 +1,7 @@
 import express from 'express';
-import { getReels } from '../contorllers/reel.controller.js';
+import { downloadReel } from '../contorllers/reel.controller.js';
 const reelRouter = express.Router();
 
-reelRouter.post('/download', getReels);
+reelRouter.post('/download', downloadReel);
 
 export default reelRouter;

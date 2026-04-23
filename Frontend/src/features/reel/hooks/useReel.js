@@ -19,8 +19,9 @@ export const useReel = () => {
         } catch (error) {
             const errorText = await error.response.data.text();
             const errorJson = JSON.parse(errorText);
-            setError(errorJson.message || 'Error downloading the reel');
-            throw errorJson.message || 'Error downloading the reel';
+            console.log(errorJson);
+            setError(errorJson.error || 'Error downloading the reel');
+            throw errorJson.error || 'Error downloading the reel';
         } finally {
             setLoading(false);
         }
