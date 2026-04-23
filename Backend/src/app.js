@@ -3,11 +3,13 @@ import reelRouter from './routes/reel.route.js';
 import cors from 'cors';
 import config from './config/config.js';
 
+
 const app = express();
 app.use(express.json());
 console.log(config.FRONTEND_URL);
 app.use(cors({
     origin: config.FRONTEND_URL,
+    exposedHeaders: ['Content-Disposition']
 }))
 
 app.use('/api/reels', reelRouter);

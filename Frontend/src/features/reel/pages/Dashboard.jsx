@@ -6,12 +6,12 @@ import '../style/reel.scss'
 
 const Dashboard = () => {
     const [url, setUrl] = useState('')
-    const { handleDownload, loading, error } = useReel()
+    const { handleDownloadReel, loading, error } = useReel()
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (loading) return;
-        handleDownload(url);
+        handleDownloadReel(url);
     }
 
 

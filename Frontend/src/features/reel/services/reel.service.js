@@ -1,14 +1,13 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL,
-  timeout: 0, 
+    baseURL: import.meta.env.VITE_BACKEND_URL,
 });
 
-export const downloadReel = async (reelUrl) => {
-    const response = await api.post('/api/reels/download', 
-        { url: reelUrl },
-        
+export const donwnloadReel = async (url) => {
+    const response = await api.post('/api/reels/download', { url }, {
+        responseType: 'blob'
+    }
     );
     return response;
 }

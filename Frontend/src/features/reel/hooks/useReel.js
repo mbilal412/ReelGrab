@@ -1,33 +1,38 @@
-import { downloadReel } from "../services/reel.service";
+import { donwnloadReel } from "../services/reel.service";
 import { useContext } from "react";
-import { ReelContext } from "../context/reelContext";
+import { ReelContext } from "../context/ReelContext";
 
 export const useReel = () => {
-    const { setLoading, setError, loading, error } = useContext(ReelContext);
-    const handleDownload = async (reelUrl) => {
+    const { loading, error, setLoading, setError } = useContext(ReelContext);
+
+    const handleDownloadReel = async (url) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await downloadReel(reelUrl);
+            const response = await donwnloadReel(url);
             const disposition = response.headers['content-disposition'];
-            const filename = disposition.split('filename=')[1].replace(/"/g, '');
-            const url = window.URL.createObjectURL(response.data);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename; // Set the download attribute to the extracted filename
-            a.click();
-        } catch (error) {
-            const errorText = await error.response.data.text();
-            const errorJson = JSON.parse(errorText);
-            console.log(errorJson);
-            setError(errorJson.error || 'Error downloading the reel');
-            throw errorJson.error || 'Error downloading the reel';
-        } finally {
-            setLoading(false);
-        }
-    };
+            const filename = disposition?.split('filename=')[1]?.replace(/"/g, '') || 'reel.mp4';
 
+            const blob = new Blob([response.data]);
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+
+        }
+        catch (err) {
+            const text = await err?.response?.data?.text();
+            const error = JSON.parse(text);
+            setError(error.message || 'Failed to download reel');
+        }finally{
+            setLoading(false);``
+        }
+    }
+    
     return {
-        handleDownload, loading, error
-    };
+        handleDownloadReel,
+        loading,
+        error
+    }
+
 }
