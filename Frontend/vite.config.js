@@ -19,7 +19,10 @@ export default defineConfig({
           action: '/share',
           method: 'GET',
           enctype: 'application/x-www-form-urlencoded',
-          params: { url: 'url' }
+          params: {
+            url: 'url',
+            text: 'text'
+          }
         }
       }
     })],

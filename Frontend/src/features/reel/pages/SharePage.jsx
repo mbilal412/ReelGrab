@@ -8,7 +8,7 @@ const SharePage = () => {
     const { handleDownloadReel, downloading, progress, error } = useReel();
     const [successMessage, setSuccessMessage] = useState('');
     const [searchParams] = useSearchParams();
-    const reelUrl = searchParams.get('url');
+    const reelUrl = searchParams.get('url') || searchParams.get('text');
 
     useEffect(() => {
         setSuccessMessage('');
@@ -37,6 +37,7 @@ const SharePage = () => {
     return (
         <main className='share-page'>
             <section className='share-card'>
+                <p>reelUrl: {reelUrl}</p>
                 <p className='share-label'>Auto Download</p>
                 <h2 className='share-title'>Your reel download starts automatically</h2>
 
@@ -50,6 +51,7 @@ const SharePage = () => {
                             <div className='download-fill' style={{ width: `${progress}%` }}></div>
                         </div>
                         <p className='progress-text'>{progress}%</p>
+
                     </>
                 )}
             </section>
