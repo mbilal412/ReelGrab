@@ -4,5 +4,8 @@ const reelRouter = express.Router();
 
 reelRouter.post('/download', downloadReel);
 reelRouter.get('/progress/:sessionId', getProgress)
+reelRouter.get('/ping', (req, res) => {
+  res.status(200).json({ message: 'pong' });
+});
 
 export default reelRouter;
