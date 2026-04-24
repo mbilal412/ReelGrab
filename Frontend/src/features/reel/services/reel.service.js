@@ -1,23 +1,32 @@
-import axios from 'axios';
+// import axios from 'axios';
 
-const api = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
-});
+// const api = axios.create({
+//     baseURL: import.meta.env.VITE_BACKEND_URL,
+// });
 
-export const donwnloadReel = async (url, sessionId) => {
-    const response = await api.post('/api/reels/download', { url, sessionId }, {
-        responseType: 'blob'
+export const donwnloadReel = async (url, onProgress) => {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/reels/download`, {
+        method: 'POST',
+        headers: {'Content-Type' : 'application/json'},
+        body: JSON.stringify({ url }),
+    });
+
+    const disposition = response.headers.get('content-disposition');
+    const filename = disposition?.split('filename=')[1]?.replace(/"/g, '') || 'reel.mp4';
+
+    const reader = response.body.getReader();
+    const contentLength = response.headers.get('Content-Length');
+    let receivedLength = 0;
+    let chunks = [];
+
+    while(true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        receivedLength += value.length;
+        const percent = receivedLength / contentLength * 100;
+        onProgress(percent.toFixed(0));
     }
-    );
-    return response;
-}
 
-export const getDownloadProgress = (sessionID, onProgress) => {
-    const eventSource = new EventSource(`${import.meta.env.VITE_BACKEND_URL}/api/reels/progress/${sessionID}`);
-    eventSource.onmessage = (event) => {
-        console.log(parseFloat(event.data));
-        onProgress(parseFloat(event.data));
-    };
-
-    return eventSource;
+    return {blob: new Blob(chunks), filename};
 }
