@@ -7,6 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      registerType: 'autoUpdate',
       manifest: {
         name: 'ReelGrab',
         short_name: 'ReelGrab',
@@ -17,6 +18,7 @@ export default defineConfig({
         share_target: {
           action: '/share',
           method: 'GET',
+          enctype: 'application/x-www-form-urlencoded',
           params: { url: 'url' }
         }
       }
