@@ -16,7 +16,7 @@ export default defineConfig({
           { src: '/icon-512.png', sizes: '512x512', type: 'image/png' }
         ],
         share_target: {
-          action: '/share',
+          action: 'https://reel-grab-indol.vercel.app/share',
           method: 'GET',
           enctype: 'application/x-www-form-urlencoded',
           params: {
