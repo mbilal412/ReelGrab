@@ -38,7 +38,7 @@ const SharePage = () => {
         <main className='share-page'>
             <section className='share-card'>
                 <p>reelUrl: {reelUrl}</p>
-                <p>{url || 'URL nahi mila'}</p>
+                <p>{reelUrl || 'URL nahi mila'}</p>
                 <p>All params: {window.location.search}</p>
                 <p className='share-label'>Auto Download</p>
                 <h2 className='share-title'>Your reel download starts automatically</h2>
