@@ -13,7 +13,7 @@ export const downloadReel = async (req, res) => {
    * First, we need to get the title of the reel to save it with a proper name.
    * We will use yt-dlp's --get-title option to retrieve the title without downloading the video.
    */
-  const titleProcess = spawn("yt-dlp", ["--get-title", url]);
+  const titleProcess = spawn("yt-dlp", ["--print", "title", url])
   let title = "";
 
   titleProcess.stderr.on("data", (data) => {
@@ -30,9 +30,9 @@ export const downloadReel = async (req, res) => {
 
   titleProcess.on("close", (code) => {
     if (code !== 0) {
-      return res.status(400).json({ message: "Failed to get reel title" });
+         console.error(`yt-dlp exited with code ${code} while getting title`);
     }
-    const safeTitle = title.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+    const safeTitle = title.replace(/[^a-z0-9]/gi, "_").toLowerCase() || "video";
     const outputPath = `${os.tmpdir()}/${safeTitle}.mp4`;
 
     /**
