@@ -8,6 +8,9 @@ export const downloadReel = async (req, res) => {
   if (!url) {
     return res.status(400).json({ message: "Invalid URL" });
   }
+  if(url.includes('youtube') || url.includes('youtu.be')) {
+    return res.status(400).json({ message: "YouTube videos are not supported" });
+  }
 
   /**
    * First, we need to get the title of the reel to save it with a proper name.
